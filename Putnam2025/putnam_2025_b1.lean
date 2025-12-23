@@ -250,7 +250,7 @@ lemma round1_main_lemma (d y z : ℝ)
     exact h8
   have h_key : ((x - d) ^ 2) + s ^ 2 = z ^ 2 := by
     have h2 : 2 * x * d = y^2 - z^2 + d^2 := by
-      rw [hx_def] ; field_simp [hvd_pos.ne'] ; ring
+      rw [hx_def] ; field_simp [hvd_pos.ne'] ;
     nlinarith [hs2]
   have h_dist_X_r : dist X r = z := by
     have h2 : dist X r = ‖X - r‖ := by simp [dist_eq_norm]
@@ -312,7 +312,7 @@ lemma round1_main_lemma (d y z : ℝ)
     | inl h17 =>
       have h18 : s / d = 0 := h17
       have h19 : s = 0 := by
-        field_simp [hvd_pos.ne'] at h18 ; tauto
+        field_simp [hvd_pos.ne'] at h18 ; simp at h18 ; exact h18
       linarith [hs_pos]
     | inr h17 =>
       have h18 : u = 0 := h17
@@ -596,7 +596,10 @@ lemma round3_h_S_infinite (d : ℝ)
       simp only [f] at h
       have h4 : d / (n + 2 : ℝ) = d / (m + 2 : ℝ) := by linarith
       have h5 : (n + 2 : ℝ) = (m + 2 : ℝ) := by
-        field_simp [hd_pos.ne'] at h4 ⊢ ; linarith
+        have hn : (n + 2 : ℝ) ≠ 0 := by positivity
+        have hm : (m + 2 : ℝ) ≠ 0 := by positivity
+        field_simp [hd_pos.ne', hn, hm] at h4
+        linarith
       have h6 : (n : ℝ) = (m : ℝ) := by linarith
       exact_mod_cast h6
     have h3 : Set.Infinite (Set.range f) := Set.infinite_range_of_injective h_inj

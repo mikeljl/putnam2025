@@ -504,10 +504,12 @@ lemma round1_h_b_strict_mono (m n : ℕ → ℕ)
   (h_b_increasing : ∀ i : ℕ, P (f (i + 1)) > P (f i)):
   ∀ (i j : ℕ), i < j → P (f j) > P (f i) := by
   intro i j h_ij
-  induction' j with j ih
-  · exfalso
+  induction j with
+  | zero =>
+    exfalso
     linarith
-  · by_cases h : i < j
+  | succ j ih =>
+    by_cases h : i < j
     · have h1 : P (f j) > P (f i) := ih h
       have h2 : P (f (j + 1)) > P (f j) := h_b_increasing j
       linarith

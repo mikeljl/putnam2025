@@ -4,6 +4,7 @@ import Mathlib.GroupTheory.MonoidLocalization.Basic
 import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import Mathlib.Topology.EMetricSpace.Paracompact
 import Mathlib.Topology.Separation.CompletelyRegular
+import Mathlib.Algebra.Order.Group.Unbundled.Abs
 
 set_option maxHeartbeats 0
 set_option maxRecDepth 1000
@@ -1049,11 +1050,11 @@ lemma round1_h2 (f : ℝ → ℝ)
         exact Eq.symm h35
 
 lemma h_abs (x y : ℝ):
-  Complex.abs (⟨x, y⟩ : ℂ) = Real.sqrt (x ^ 2 + y ^ 2) := by
+  ‖(⟨x, y⟩ : ℂ)‖ = Real.sqrt (x ^ 2 + y ^ 2) := by
   have h1 : Complex.normSq (⟨x, y⟩ : ℂ) = x ^ 2 + y ^ 2 := by
     simp [Complex.normSq]
     ring
-  have h2 : Complex.abs (⟨x, y⟩ : ℂ) = Real.sqrt (Complex.normSq (⟨x, y⟩ : ℂ)) := by
+  have h2 : ‖(⟨x, y⟩ : ℂ)‖ = Real.sqrt (Complex.normSq (⟨x, y⟩ : ℂ)) := by
     exact rfl
   rw [h2, h1]
 
@@ -1100,13 +1101,13 @@ lemma round2_disc_volume :
     constructor
     · rintro ⟨q, hq, rfl⟩
       have hq1 : q.1 ^ 2 + q.2 ^ 2 ≤ r ^ 2 := hq
-      have h_abs_eq : Complex.abs (e q) = Real.sqrt (q.1 ^ 2 + q.2 ^ 2) := by
+      have h_abs_eq : ‖(e q)‖ = Real.sqrt (q.1 ^ 2 + q.2 ^ 2) := by
         exact h_abs (e q).re (e q).im
-      have h2 : Complex.abs (e q) ≤ r := by
+      have h2 : ‖(e q)‖ ≤ r := by
         rw [h_abs_eq]
         apply Real.sqrt_le_iff.mpr
         constructor <;> nlinarith
-      have h3 : Dist.dist (e q) 0 = Complex.abs (e q - 0) := by
+      have h3 : Dist.dist (e q) 0 = ‖(e q - 0)‖ := by
         rw [Complex.dist_eq]
       have h4 : Dist.dist (e q) 0 ≤ r := by
         rw [h3]
@@ -1115,19 +1116,20 @@ lemma round2_disc_volume :
     · intro hz
       let q : ℝ × ℝ := (z.re, z.im)
       have h_dist : Dist.dist z 0 ≤ r := hz
-      have h_abs : Complex.abs z ≤ r := by
-        have h3 : Dist.dist z 0 = Complex.abs (z - 0) := by
+      have h_abs : ‖z‖ ≤ r := by
+        have h3 : Dist.dist z 0 = ‖(z - 0)‖ := by
           rw [Complex.dist_eq]
-        have h4 : Dist.dist z 0 = Complex.abs z := by
+        have h4 : Dist.dist z 0 = ‖z‖ := by
           simp
         rw [h4] at h_dist
         exact h_dist
       have hq : q.1 ^ 2 + q.2 ^ 2 ≤ r ^ 2 := by
         have h_eq2 : q.1 ^ 2 + q.2 ^ 2 = Complex.normSq z := by
           simp [q, Complex.normSq] ; ring
-        have h3 : (Complex.abs z) ^ 2 = Complex.normSq z := by exact Complex.sq_abs z
-        have h4 : 0 ≤ Complex.abs z := by positivity
-        have h5 : (Complex.abs z) ^ 2 ≤ r ^ 2 := by nlinarith
+        have h3 : (‖z‖) ^ 2 = Complex.normSq z := by
+          rw [sq, Complex.normSq_eq_norm_sq, sq]
+        have h4 : 0 ≤ ‖z‖ := by positivity
+        have h5 : (‖z‖) ^ 2 ≤ r ^ 2 := by nlinarith
         rw [h_eq2, ← h3]
         exact h5
       refine ⟨q, hq, ?_⟩
@@ -1544,7 +1546,7 @@ theorem x2_is_D_div_C (f : ℝ → ℝ)
   have h_eq1 : Real.pi * ∫ (x : ℝ) in Set.Icc (0 : ℝ) 1, x * (f x)^2 = Real.pi * ∫ (x : ℝ) in (0)..1, x * (f x)^2 := by
     rw [h_num_eq']
   rw [h_eq1]
-  field_simp [h_pos.ne'] ; ring
+  field_simp [h_pos.ne'] ;
 
 lemma round1_h1'' (f : ℝ → ℝ)
   (hf : ∀ x ∈ Icc (0 : ℝ) 1, 0 ≤ f x)
@@ -1595,9 +1597,9 @@ lemma round1_h_forward (A B C D : ℝ)
   have h3 : A * C * (B / A) < A * C * (D / C) := by
     exact mul_lt_mul_of_pos_left h2 h1
   have h4 : A * C * (B / A) = C * B := by
-    field_simp [hA.ne'] ; ring
+    field_simp [hA.ne'] ;
   have h5 : A * C * (D / C) = A * D := by
-    field_simp [hC.ne'] ; ring
+    field_simp [hC.ne'] ;
   rw [h4, h5] at h3
   linarith
 
@@ -1611,9 +1613,9 @@ lemma round1_h_backward (A B C D : ℝ)
   have h3 : (A * D) / (A * C) > (B * C) / (A * C) := by
     apply div_lt_div_of_pos_right h2 h1
   have h4 : (A * D) / (A * C) = D / C := by
-    field_simp [hA.ne', hC.ne'] ; ring
+    field_simp [hA.ne', hC.ne'] ;
   have h5 : (B * C) / (A * C) = B / A := by
-    field_simp [hA.ne', hC.ne'] ; ring
+    field_simp [hA.ne', hC.ne'] ;
   rw [h4, h5] at h3
   linarith
 

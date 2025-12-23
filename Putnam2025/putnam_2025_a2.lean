@@ -75,8 +75,15 @@ lemma round1_f_strict_anti :
     have hz2 : z < Real.pi / 2 := hz.2
     have h2 : deriv f z = (z * Real.cos z - Real.sin z) / (z ^ 2) := by
       simp [f, div_eq_mul_inv]
+      have : deriv (fun x => Real.sin x * x⁻¹) z * z ^ 2 = z * Real.cos z - Real.sin z := by
+        have hd := (Real.hasDerivAt_sin z).mul ((hasDerivAt_id z).inv hz1.ne')
+        simp at hd
+        have : deriv (fun x => Real.sin x * x⁻¹) z = deriv (Real.sin * id⁻¹) z := by congr
+        rw [this, hd.deriv]
+        field_simp
+        ring
       field_simp
-      ring_nf
+      exact this
     rw [h2]
     have h3 : z * Real.cos z - Real.sin z < 0 := round1_h_neg z hz1 (by linarith)
     have h4 : 0 < z ^ 2 := by positivity

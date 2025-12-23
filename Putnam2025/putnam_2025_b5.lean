@@ -2260,7 +2260,8 @@ lemma round1_h_inv2 (p : ℕ)
   have h4 : 1 ≤ inv 2 ∧ inv 2 < 5 ∧ (2 * inv 2) % 5 = 1 := h3
   have h5 : inv 2 < 5 := h4.2.1
   have h6 : (2 * inv 2) % 5 = 1 := h4.2.2
-  interval_cases h7 : inv 2 <;> norm_num at h6 ⊢
+  interval_cases inv 2 <;> norm_num at h6 <;> rfl
+
 
 lemma round1_h_inv3 (p : ℕ)
   [hp : Fact p.Prime]
@@ -2275,7 +2276,7 @@ lemma round1_h_inv3 (p : ℕ)
   have h4 : 1 ≤ inv 3 ∧ inv 3 < 5 ∧ (3 * inv 3) % 5 = 1 := h3
   have h5 : inv 3 < 5 := h4.2.1
   have h6 : (3 * inv 3) % 5 = 1 := h4.2.2
-  interval_cases h7 : inv 3 <;> norm_num at h6 ⊢
+  interval_cases h7 : inv 3 <;> norm_num at h6 <;> rfl
 
 lemma round1_h_inv4 (p : ℕ)
   [hp : Fact p.Prime]
@@ -2290,7 +2291,7 @@ lemma round1_h_inv4 (p : ℕ)
   have h4 : 1 ≤ inv 4 ∧ inv 4 < 5 ∧ (4 * inv 4) % 5 = 1 := h3
   have h5 : inv 4 < 5 := h4.2.1
   have h6 : (4 * inv 4) % 5 = 1 := h4.2.2
-  interval_cases h7 : inv 4 <;> norm_num at h6 ⊢
+  interval_cases h7 : inv 4 <;> norm_num at h6 <;> rfl
 
 lemma round1_hA_eq (p : ℕ)
   [hp : Fact p.Prime]
@@ -2561,7 +2562,14 @@ theorem putnam_2025_b5 (p : ℕ)
         have h1021 : Nat.Prime p := by exact Fact.out
         have h1022 : 3 < p := hp3
         have h1023 : p ≤ 10 := h101
-        interval_cases p <;> norm_num at h1021 ⊢
+        interval_cases p
+        · norm_num at h1021  -- p = 4, not prime
+        · left; rfl           -- p = 5, prime
+        · norm_num at h1021  -- p = 6, not prime
+        · right; rfl          -- p = 7, prime
+        · norm_num at h1021  -- p = 8, not prime
+        · norm_num at h1021  -- p = 9, not prime
+        · norm_num at h1021  -- p = 10, not prime
       rcases h102 with (h102 | h102)
       ·
         have h11 : (A.card : ℝ) > (p : ℝ) / 4 - 1 := by

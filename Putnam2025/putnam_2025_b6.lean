@@ -891,15 +891,20 @@ theorem pnat_function_is_strictly_positive (g : ℕ+ → ℕ+)
 lemma round1_h_main_494b28 :
   ∀ (m : ℕ), m ≥ 3 → m ^ 2 ≥ m + 3 := by
   intro m hm
-  induction' hm with m hm ih
-  ·
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hm
+  clear hm
+  induction k with
+  | zero =>
     norm_num
-  ·
-    cases m with
-    | zero => contradiction
-    | succ m' =>
-      simp [pow_two, Nat.succ_eq_add_one] at *
-      ring_nf at * ; omega
+  | succ k ih =>
+    have h1 : (3 + (k + 1)) ^ 2 = (3 + k) ^ 2 + 2 * (3 + k) + 1 := by ring
+    have h2 : (3 + k) ^ 2 ≥ (3 + k) + 3 := ih
+    have h3 : (3 + k) ≥ 3 := by omega
+    calc (3 + (k + 1)) ^ 2 = (3 + k) ^ 2 + 2 * (3 + k) + 1 := h1
+      _ ≥ ((3 + k) + 3) + 2 * (3 + k) + 1 := by omega
+      _ ≥ ((3 + k) + 3) + 2 * 3 + 1 := by omega
+      _ = (3 + k) + 10 := by ring
+      _ ≥ (3 + (k + 1)) + 3 := by omega
 
 theorem lemma_nat_inequality_n_minus_1_sq_ge_n_plus_2 :
   ∀ (n : ℕ), n ≥ 4 → (n - 1) ^ 2 ≥ n + 2 := by

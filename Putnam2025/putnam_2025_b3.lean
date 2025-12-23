@@ -415,7 +415,10 @@ theorem round1_lemma4 :
   let K := Nat.totient (3 ^ a) * Nat.totient (5 ^ b)
   have h_main2 : m ∣ 135 ^ (Nat.totient m * K) - 1 := by
     have h10 : 135 ^ Nat.totient m - 1 ∣ 135 ^ (Nat.totient m * K) - 1 := by
-      exact nat_pow_one_sub_dvd_pow_mul_sub_one 135 m.totient K
+      have : 135 ^ (Nat.totient m * K) = (135 ^ Nat.totient m) ^ K := by
+        rw [mul_comm, ← pow_mul]; congr 1; exact mul_comm _ _
+      rw [this]
+      exact Nat.sub_one_dvd_pow_sub_one (135 ^ Nat.totient m) K
     exact dvd_trans h_main1 h10
   have h_final : Nat.totient (3 ^ a) * Nat.totient (5 ^ b) * Nat.totient m = Nat.totient m * K := by
     ring
